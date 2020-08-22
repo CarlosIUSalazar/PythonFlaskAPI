@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for, redirect
 from flask_bootstrap import Bootstrap
 from flask_mysqldb import MySQL
+from itertools import chain
 import yaml
 
 
@@ -18,8 +19,13 @@ mysql = MySQL(app)
 @app.route('/')
 def index():
     cur = mysql.connection.cursor()
-    cur.execute("INSERT INTO user VALUES(%s)",['Mike'])
-    mysql.connection.commit()   #saves the changes into db
+    #cur.execute("INSERT INTO user VALUES(%s)",['Mike'])
+    #mysql.connection.commit()   #saves the changes into db
+    result_value = cur.execute("SELECT * FROM user")  #Returns the number of columbs of user and saves it into varialbe "result_value"
+    if result_value > 0:
+        #users = cur.fetchall()
+        users = list(chain.from_iterable(cur.fetchall()))
+        return users[0]
     return render_template('index.html')
 
     #fruits = ['Apple', 'Mango','Orange']
